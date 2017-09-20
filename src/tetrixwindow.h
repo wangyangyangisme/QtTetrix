@@ -15,9 +15,11 @@ class QPushButton;
 
 class QMenuBar;
 
-class UserDialog;
-
 class TetrixBoard;
+
+class UserManager;
+
+class UserDialog;
 
 class TetrixWindow : public QWidget {
 Q_OBJECT
@@ -25,20 +27,17 @@ Q_OBJECT
 public:
     TetrixWindow();
 
-    void onSaveActionTriggered();
-
-    void onLoadActionTriggered();
-
 private:
     QLabel *createLabel(const QString &text);
 
     TetrixBoard *board;
+    UserManager *userManager;
     UserDialog *userDialog;
     QLabel *nextPieceLabel;
     QLCDNumber *scoreLcd, *levelLcd, *linesLcd;
-    QPushButton *startButton, *quitButton, *pauseButton;
+    QPushButton *startButton, *quitButton, *pauseButton, *goOnButton;
     QMenuBar *menuBar;
-    QAction *saveAction, *loadAction;
+    QAction *signInAction, *signUpAction;
 };
 
 #endif //QTTETRIX_TETRIXWINDOW_H

@@ -273,3 +273,27 @@ void TetrixBoard::drawSquare(QPainter &painter, int x, int y, TetrixShape shape)
     painter.drawLine(x + 1, y + squareHeight() - 1, x + squareWidth() - 1, y + squareHeight() - 1);
     painter.drawLine(x + squareWidth() - 1, y + squareHeight() - 1, x + squareWidth() - 1, y + 1);
 }
+
+void TetrixBoard::setScore(int score) {
+    TetrixBoard::score = score;
+    emit scoreChanged(score);
+}
+
+void TetrixBoard::setLevel(int level) {
+    TetrixBoard::level = level;
+    emit levelChanged(level);
+}
+
+void TetrixBoard::goOn() {
+    isStarted = true;
+    isWaitingAfterLine = false;
+    numLinesRemoved = numPiecesDropped = 0;
+    clearBoard();
+
+    emit linesRemovedChanged(numLinesRemoved);
+    emit scoreChanged(score);
+    emit levelChanged(level);
+
+    newPiece();
+    timer.start(timeoutTime(), this);
+}

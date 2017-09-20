@@ -17,7 +17,7 @@ class TetrixBoard : public QFrame {
 Q_OBJECT
 
 public:
-    TetrixBoard(QWidget *parent = 0);
+    explicit TetrixBoard(QWidget *parent = nullptr);
 
     void setNextPieceLabel(QLabel *label);
 
@@ -25,11 +25,17 @@ public:
 
     QSize minimumSizeHint() const override;
 
+    void setScore(int score);
+
+    void setLevel(int level);
+
 public slots:
 
     void start();
 
     void pause();
+
+    void goOn();
 
 signals:
 
