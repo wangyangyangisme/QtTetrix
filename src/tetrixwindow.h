@@ -7,6 +7,8 @@
 
 #include <QtWidgets/QWidget>
 
+class QTableWidget;
+
 class QLCDNumber;
 
 class QLabel;
@@ -38,6 +40,7 @@ private:
     QPushButton *startButton, *quitButton, *pauseButton, *goOnButton;
     QMenuBar *menuBar;
     QAction *signInAction, *signUpAction;
+    QTableWidget *tableWidget;
 };
 
 #endif //QTTETRIX_TETRIXWINDOW_H

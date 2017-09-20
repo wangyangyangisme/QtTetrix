@@ -42,6 +42,8 @@ public:
     void setScore(int score);
 
     const QJsonObject &toQJsonObject() const;
+
+    bool operator<(const UserInfo &rhs) const;
 };
 
 #endif //QTTETRIX_USERINFO_H

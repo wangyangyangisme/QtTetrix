@@ -10,6 +10,8 @@
 
 class UserInfo;
 
+class QTableWidgetItem;
+
 class UserManager : public QObject {
 Q_OBJECT
 
@@ -32,6 +34,8 @@ public:
 
     void showLogInSuccess(const QString &text);
 
+    void handleRankTable(int);
+
 signals:
 
     void scoreChanged(int score);
@@ -39,6 +43,8 @@ signals:
     void levelChanged(int level);
 
     void logInSuccess(bool inAvailable);
+
+    void rankListAddUser(int, int, QTableWidgetItem *);
 
 private:
     QVector<UserInfo> userVector;

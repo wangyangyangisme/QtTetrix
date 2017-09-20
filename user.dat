@@ -1,11 +1,25 @@
 {
     "users": [
         {
-            "level": 5,
+            "level": 9,
             "password": "123",
-            "score": 937,
+            "score": 10305,
             "signUpTime": "周三 9月 20 16:22:40 2017",
             "username": "123"
+        },
+        {
+            "level": 0,
+            "password": "1234",
+            "score": 0,
+            "signUpTime": "周四 9月 21 00:38:55 2017",
+            "username": "1234"
+        },
+        {
+            "level": 0,
+            "password": "12345",
+            "score": 0,
+            "signUpTime": "周四 9月 21 00:42:35 2017",
+            "username": "12345"
         }
     ]
 }

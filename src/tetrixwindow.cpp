@@ -12,6 +12,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QTableWidget>
 #include <QtCore/QCoreApplication>
 
 TetrixWindow::TetrixWindow() {
@@ -47,6 +48,13 @@ TetrixWindow::TetrixWindow() {
     menuBar->addAction(signInAction);
     menuBar->addAction(signUpAction);
 
+    tableWidget = new QTableWidget(10, 2, this);
+    QStringList headers;
+    headers << "用户名" << "分数";
+    tableWidget->setHorizontalHeaderLabels(headers);
+    tableWidget->setColumnCount(2);
+    tableWidget->setRowCount(4);
+
     connect(startButton, SIGNAL(clicked()), board, SLOT(start()));
     connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
     connect(goOnButton, &QPushButton::clicked, board, &TetrixBoard::goOn);
@@ -63,9 +71,10 @@ TetrixWindow::TetrixWindow() {
     connect(userDialog, &UserDialog::sendSignInInfo, userManager, &UserManager::auth);
     connect(userDialog, &UserDialog::sendSignUpInfo, userManager, &UserManager::newUser);
     connect(userManager, &UserManager::logInSuccess, goOnButton, &QPushButton::setDisabled);
+    connect(userManager, &UserManager::rankListAddUser, tableWidget, &QTableWidget::setItem);
     // TODO: connect(this, &TetrixWindow::show, userDialog, &UserDialog::signIn);
 
-    QGridLayout *layout = new QGridLayout;
+    QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(createLabel(tr("下一块")), 0, 0);
     layout->addWidget(nextPieceLabel, 1, 0);
     layout->addWidget(createLabel(tr("等级")), 2, 0);
@@ -79,11 +88,13 @@ TetrixWindow::TetrixWindow() {
     layout->addWidget(linesLcd, 3, 2);
     layout->addWidget(quitButton, 4, 2);
     layout->addWidget(pauseButton, 5, 2);
+    layout->addWidget(createLabel(tr("排行")), 0, 3);
+    layout->addWidget(tableWidget, 1, 3);
     layout->setMenuBar(menuBar);
     setLayout(layout);
 
     setWindowTitle(tr("俄罗斯方块"));
-    resize(550, 370);
+    resize(1024, 768);
 }
 
 QLabel *TetrixWindow::createLabel(const QString &text) {

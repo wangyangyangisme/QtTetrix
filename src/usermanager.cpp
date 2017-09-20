@@ -11,6 +11,7 @@
 #include <QtCore/QJsonObject>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTableWidgetItem>
 
 void UserManager::auth(const QString &username, const QString &password) {
     for (UserInfo &user : userVector) {
@@ -34,6 +35,7 @@ void UserManager::newUser(const QString &username, const QString &password) {
     }
     userVector.append(UserInfo(QDateTime::currentDateTime().toString(), username, password, 0, 0));
     currentUser = &userVector.back();
+    handleRankTable(0);
     showLogInSuccess(tr("注册"));
 }
 
@@ -41,9 +43,13 @@ UserManager::UserManager(QObject *parent) : currentUser(), QObject(parent) {
     QFile userFile("user.dat");
     userFile.open(QIODevice::ReadOnly);
     QJsonArray userArray(QJsonDocument::fromJson(userFile.readAll()).object()["users"].toArray());
-    for (QJsonValueRef userRef:userArray)
-        userVector.push_back(UserInfo(userRef.toObject()));
+    for (size_t i = 0; i < userArray.size(); i++) {
+        UserInfo user(userArray[i].toObject());
+        userVector.push_back(user);
+    }
     userFile.close();
+
+    connect(this, &UserManager::scoreChanged, this, &UserManager::handleRankTable);
 }
 
 UserManager::~UserManager() {
@@ -77,4 +83,13 @@ void UserManager::setCurrentLevel(int currentLevel) {
 void UserManager::showLogInSuccess(const QString &text) {
     QMessageBox::information(nullptr, text, tr("%1成功！").arg(text));
     emit logInSuccess(false);
+}
+
+void UserManager::handleRankTable(int) {
+    QVector<UserInfo> rankList(userVector);
+    std::sort(rankList.begin(), rankList.end());
+    for (int i = 0; i < rankList.size(); i++) {
+        emit rankListAddUser(i, 0, new QTableWidgetItem(rankList[i].getUsername()));
+        emit rankListAddUser(i, 1, new QTableWidgetItem(tr("%1").arg(rankList[i].getScore())));
+    }
 }
