@@ -24,10 +24,6 @@ public:
 
     void newUser(const QString &username, const QString &password);
 
-    const QVector<UserInfo> &getUserVector() const;
-
-    const UserInfo &getCurrentUser() const;
-
     void setCurrentScore(int currentScore);
 
     void setCurrentLevel(int currentLevel);

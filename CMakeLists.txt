@@ -16,6 +16,7 @@ set(SOURCE_FILES src/main.cpp
         src/userdialog.cpp src/userdialog.h
         src/usermanager.cpp src/usermanager.h
         src/userinfo.cpp src/userinfo.h)
+
 add_executable(QtTetrix ${SOURCE_FILES} ${RESOURCE_FILES})
 
 target_link_libraries(QtTetrix Qt5::Widgets Qt5::Multimedia)

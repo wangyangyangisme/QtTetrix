@@ -3,6 +3,15 @@
         <file alias="background">背景.jpg</file>
     </qresource>
     <qresource prefix="/musics">
-        <file alias="background">背景.mp3</file>
+        <file alias="1">bgm1.mp3</file>
+        <file alias="2">bgm2.mp3</file>
+        <file alias="3">bgm3.mp3</file>
+        <file alias="4">bgm4.mp3</file>
+        <file alias="5">bgm5.mp3</file>
+        <file alias="6">bgm6.mp3</file>
+        <file alias="7">bgm7.mp3</file>
+        <file alias="8">bgm8.mp3</file>
+        <file alias="9">bgm9.mp3</file>
+        <file alias="10">bgm10.mp3</file>
     </qresource>
 </RCC>

@@ -30,9 +30,6 @@ QSize TetrixBoard::minimumSizeHint() const {
 }
 
 void TetrixBoard::start() {
-    if (isPaused)
-        return;
-
     isStarted = true;
     isWaitingAfterLine = false;
     numLinesRemoved = numPiecesDropped = 0;
@@ -285,6 +282,9 @@ void TetrixBoard::setLevel(int level) {
 }
 
 void TetrixBoard::goOn() {
+    if (isPaused)
+        return;
+
     isStarted = true;
     isWaitingAfterLine = false;
     numLinesRemoved = numPiecesDropped = 0;

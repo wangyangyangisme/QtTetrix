@@ -14,6 +14,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QTableWidget>
 #include <QtMultimedia/QMediaPlayer>
+#include <QtMultimedia/QMediaPlaylist>
 #include <QtCore/QCoreApplication>
 
 TetrixWindow::TetrixWindow() : QWidget() {
@@ -24,7 +25,19 @@ TetrixWindow::TetrixWindow() : QWidget() {
     setPalette(*palette);
 
     QMediaPlayer *mediaPlayer = new QMediaPlayer(this);
-    mediaPlayer->setMedia(QUrl("qrc:/musics/background"));
+    QMediaPlaylist *playList = new QMediaPlaylist;
+    playList->addMedia(QUrl("qrc:/musics/1"));
+    playList->addMedia(QUrl("qrc:/musics/2"));
+    playList->addMedia(QUrl("qrc:/musics/3"));
+    playList->addMedia(QUrl("qrc:/musics/4"));
+    playList->addMedia(QUrl("qrc:/musics/5"));
+    playList->addMedia(QUrl("qrc:/musics/6"));
+    playList->addMedia(QUrl("qrc:/musics/7"));
+    playList->addMedia(QUrl("qrc:/musics/8"));
+    playList->addMedia(QUrl("qrc:/musics/9"));
+    playList->addMedia(QUrl("qrc:/musics/10"));
+    playList->setPlaybackMode(QMediaPlaylist::Loop);
+    mediaPlayer->setPlaylist(playList);
     mediaPlayer->setVolume(50);
 
     board = new TetrixBoard(this);
@@ -43,7 +56,7 @@ TetrixWindow::TetrixWindow() : QWidget() {
     linesLcd = new QLCDNumber(5, this);
     linesLcd->setSegmentStyle(QLCDNumber::Filled);
 
-    startButton = new QPushButton(tr("开始"), this);
+    startButton = new QPushButton(tr("开始新的"), this);
     startButton->setFocusPolicy(Qt::NoFocus);
     startButton->setDisabled(true);
     quitButton = new QPushButton(tr("退出"), this);
@@ -51,7 +64,7 @@ TetrixWindow::TetrixWindow() : QWidget() {
     pauseButton = new QPushButton(tr("暂停"), this);
     pauseButton->setFocusPolicy(Qt::NoFocus);
     pauseButton->setDisabled(true);
-    goOnButton = new QPushButton(tr("继续"), this);
+    goOnButton = new QPushButton(tr("继续存档"), this);
     goOnButton->setFocusPolicy(Qt::NoFocus);
     goOnButton->setDisabled(true);
 
@@ -63,31 +76,37 @@ TetrixWindow::TetrixWindow() : QWidget() {
 
     tableWidget = new QTableWidget(10, 2, this);
     QStringList headers;
-    headers << "用户名" << "分数";
+    headers << tr("用户名") << tr("分数");
     tableWidget->setHorizontalHeaderLabels(headers);
-    // tableWidget->setFixedSize(width() / 3, height() / 2.2);
 
-    connect(startButton, SIGNAL(clicked()), board, SLOT(start()));
-    connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
+    connect(startButton, &QPushButton::clicked, board, &TetrixBoard::start);
     connect(goOnButton, &QPushButton::clicked, board, &TetrixBoard::goOn);
-    connect(pauseButton, SIGNAL(clicked()), board, SLOT(pause()));
-    connect(board, SIGNAL(scoreChanged(int)), scoreLcd, SLOT(display(int)));
+    connect(pauseButton, &QPushButton::clicked, board, &TetrixBoard::pause);
+    connect(quitButton, &QPushButton::clicked, qApp, &QCoreApplication::quit);
+    connect(startButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::play);
+    connect(goOnButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::play);
+    connect(pauseButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::pause);
+    connect(goOnButton, &QPushButton::clicked, [this](bool) { goOnButton->setDisabled(true); });
+
+    connect(board, &TetrixBoard::scoreChanged, [this](int displayNum) { scoreLcd->display(displayNum); });
     connect(board, &TetrixBoard::scoreChanged, userManager, &UserManager::setCurrentScore);
-    connect(userManager, &UserManager::scoreChanged, board, &TetrixBoard::setScore);
-    connect(board, SIGNAL(levelChanged(int)), levelLcd, SLOT(display(int)));
+    connect(board, &TetrixBoard::scoreChanged, userManager, &UserManager::handleRankTable);
+    connect(board, &TetrixBoard::levelChanged, [this](int displayNum) { levelLcd->display(displayNum); });
     connect(board, &TetrixBoard::levelChanged, userManager, &UserManager::setCurrentLevel);
+    connect(board, &TetrixBoard::levelChanged, playList, &QMediaPlaylist::next);
+    connect(board, &TetrixBoard::linesRemovedChanged, [this](int displayNum) { linesLcd->display(displayNum); });
+
+    connect(userManager, &UserManager::scoreChanged, board, &TetrixBoard::setScore);
     connect(userManager, &UserManager::levelChanged, board, &TetrixBoard::setLevel);
-    connect(board, SIGNAL(linesRemovedChanged(int)), linesLcd, SLOT(display(int)));
-    connect(signInAction, &QAction::triggered, userDialog, &UserDialog::signIn);
-    connect(signUpAction, &QAction::triggered, userDialog, &UserDialog::signUp);
-    connect(userDialog, &UserDialog::sendSignInInfo, userManager, &UserManager::auth);
-    connect(userDialog, &UserDialog::sendSignUpInfo, userManager, &UserManager::newUser);
     connect(userManager, &UserManager::logInSuccess, startButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::logInSuccess, pauseButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::logInSuccess, goOnButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::rankListAddUser, tableWidget, &QTableWidget::setItem);
-    connect(startButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::play);
-    connect(goOnButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::play);
+
+    connect(signInAction, &QAction::triggered, userDialog, &UserDialog::signIn);
+    connect(signUpAction, &QAction::triggered, userDialog, &UserDialog::signUp);
+    connect(userDialog, &UserDialog::sendSignInInfo, userManager, &UserManager::auth);
+    connect(userDialog, &UserDialog::sendSignUpInfo, userManager, &UserManager::newUser);
 
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(createLabel(tr("下一块")), 0, 0, 1, 1);
