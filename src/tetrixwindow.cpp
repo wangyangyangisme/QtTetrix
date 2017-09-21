@@ -19,23 +19,24 @@
 
 TetrixWindow::TetrixWindow() : QWidget() {
     QPalette *palette = new QPalette;
-    palette->setBrush(QPalette::Background, QBrush(QPixmap(":/images/background").scaled(size(), Qt::IgnoreAspectRatio,
-                                                                                         Qt::SmoothTransformation)));
+    palette->setBrush(QPalette::Background,
+                      QBrush(QPixmap(":/images/background/1").scaled(size(), Qt::IgnoreAspectRatio,
+                                                                     Qt::SmoothTransformation)));
     setAutoFillBackground(true);
     setPalette(*palette);
 
     QMediaPlayer *mediaPlayer = new QMediaPlayer(this);
     QMediaPlaylist *playList = new QMediaPlaylist;
-    playList->addMedia(QUrl("qrc:/musics/1"));
-    playList->addMedia(QUrl("qrc:/musics/2"));
-    playList->addMedia(QUrl("qrc:/musics/3"));
-    playList->addMedia(QUrl("qrc:/musics/4"));
-    playList->addMedia(QUrl("qrc:/musics/5"));
-    playList->addMedia(QUrl("qrc:/musics/6"));
-    playList->addMedia(QUrl("qrc:/musics/7"));
-    playList->addMedia(QUrl("qrc:/musics/8"));
-    playList->addMedia(QUrl("qrc:/musics/9"));
-    playList->addMedia(QUrl("qrc:/musics/10"));
+    playList->addMedia(QUrl("qrc:/musics/background/1"));
+    playList->addMedia(QUrl("qrc:/musics/background/2"));
+    playList->addMedia(QUrl("qrc:/musics/background/3"));
+    playList->addMedia(QUrl("qrc:/musics/background/4"));
+    playList->addMedia(QUrl("qrc:/musics/background/5"));
+    playList->addMedia(QUrl("qrc:/musics/background/6"));
+    playList->addMedia(QUrl("qrc:/musics/background/7"));
+    playList->addMedia(QUrl("qrc:/musics/background/8"));
+    playList->addMedia(QUrl("qrc:/musics/background/9"));
+    playList->addMedia(QUrl("qrc:/musics/background/10"));
     playList->setPlaybackMode(QMediaPlaylist::Loop);
     mediaPlayer->setPlaylist(playList);
     mediaPlayer->setVolume(50);
@@ -95,6 +96,13 @@ TetrixWindow::TetrixWindow() : QWidget() {
     connect(board, &TetrixBoard::levelChanged, userManager, &UserManager::setCurrentLevel);
     connect(board, &TetrixBoard::levelChanged, playList, &QMediaPlaylist::next);
     connect(board, &TetrixBoard::linesRemovedChanged, [this](int displayNum) { linesLcd->display(displayNum); });
+
+    connect(board, &TetrixBoard::levelChanged, [this, palette](int level) {
+        palette->setBrush(QPalette::Background,
+                          QBrush(QPixmap(tr(":/images/background/%1").arg(level)).scaled(size(), Qt::IgnoreAspectRatio,
+                                                                                         Qt::SmoothTransformation)));
+        setPalette(*palette);
+    });
 
     connect(userManager, &UserManager::scoreChanged, board, &TetrixBoard::setScore);
     connect(userManager, &UserManager::levelChanged, board, &TetrixBoard::setLevel);

@@ -1,17 +1,26 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="background">背景.jpg</file>
+        <file alias="background/1">1.jpg</file>
+        <file alias="background/2">2.jpg</file>
+        <file alias="background/3">3.jpg</file>
+        <file alias="background/4">4.jpg</file>
+        <file alias="background/5">5.jpg</file>
+        <file alias="background/6">6.jpg</file>
+        <file alias="background/7">7.jpg</file>
+        <file alias="background/8">8.jpg</file>
+        <file alias="background/9">9.jpg</file>
+        <file alias="background/10">10.jpg</file>
     </qresource>
     <qresource prefix="/musics">
-        <file alias="1">bgm1.mp3</file>
-        <file alias="2">bgm2.mp3</file>
-        <file alias="3">bgm3.mp3</file>
-        <file alias="4">bgm4.mp3</file>
-        <file alias="5">bgm5.mp3</file>
-        <file alias="6">bgm6.mp3</file>
-        <file alias="7">bgm7.mp3</file>
-        <file alias="8">bgm8.mp3</file>
-        <file alias="9">bgm9.mp3</file>
-        <file alias="10">bgm10.mp3</file>
+        <file alias="background/1">bgm1.mp3</file>
+        <file alias="background/2">bgm2.mp3</file>
+        <file alias="background/3">bgm3.mp3</file>
+        <file alias="background/4">bgm4.mp3</file>
+        <file alias="background/5">bgm5.mp3</file>
+        <file alias="background/6">bgm6.mp3</file>
+        <file alias="background/7">bgm7.mp3</file>
+        <file alias="background/8">bgm8.mp3</file>
+        <file alias="background/9">bgm9.mp3</file>
+        <file alias="background/10">bgm10.mp3</file>
     </qresource>
 </RCC>
