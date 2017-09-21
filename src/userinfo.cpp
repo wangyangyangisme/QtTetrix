@@ -69,7 +69,7 @@ UserInfo::UserInfo(const QJsonObject &userObject) {
 }
 
 bool UserInfo::operator<(const UserInfo &rhs) const {
-    return !score < rhs.score;
+    return score >= rhs.score;
 }
 
 UserInfo::UserInfo() = default;

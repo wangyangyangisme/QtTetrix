@@ -13,9 +13,20 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QTableWidget>
+#include <QtMultimedia/QMediaPlayer>
 #include <QtCore/QCoreApplication>
 
 TetrixWindow::TetrixWindow() : QWidget() {
+    QPalette *palette = new QPalette;
+    palette->setBrush(QPalette::Background, QBrush(QPixmap(":/images/background").scaled(size(), Qt::IgnoreAspectRatio,
+                                                                                         Qt::SmoothTransformation)));
+    setAutoFillBackground(true);
+    setPalette(*palette);
+
+    QMediaPlayer *mediaPlayer = new QMediaPlayer(this);
+    mediaPlayer->setMedia(QUrl("qrc:/musics/background"));
+    mediaPlayer->setVolume(50);
+
     board = new TetrixBoard(this);
     userManager = new UserManager(this);
     userDialog = new UserDialog(this);
@@ -54,9 +65,7 @@ TetrixWindow::TetrixWindow() : QWidget() {
     QStringList headers;
     headers << "用户名" << "分数";
     tableWidget->setHorizontalHeaderLabels(headers);
-    //tableWidget->setColumnCount(2);
-    //tableWidget->setRowCount(4);
-    tableWidget->setFixedSize(width() / 3, height() / 2.2);
+    // tableWidget->setFixedSize(width() / 3, height() / 2.2);
 
     connect(startButton, SIGNAL(clicked()), board, SLOT(start()));
     connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
@@ -77,6 +86,8 @@ TetrixWindow::TetrixWindow() : QWidget() {
     connect(userManager, &UserManager::logInSuccess, pauseButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::logInSuccess, goOnButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::rankListAddUser, tableWidget, &QTableWidget::setItem);
+    connect(startButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::play);
+    connect(goOnButton, &QPushButton::clicked, mediaPlayer, &QMediaPlayer::play);
 
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(createLabel(tr("下一块")), 0, 0, 1, 1);
@@ -88,14 +99,14 @@ TetrixWindow::TetrixWindow() : QWidget() {
     layout->addWidget(startButton, 7, 0, 1, 1);
     layout->addWidget(goOnButton, 8, 0, 1, 1);
 
-    layout->addWidget(board, 0, 1, 9, 1);
+    layout->addWidget(board, 0, 1, 9, 2);
 
-    layout->addWidget(createLabel(tr("已移除的行数")), 0, 2, 1, 1);
-    layout->addWidget(linesLcd, 1, 2, 1, 1);
-    layout->addWidget(quitButton, 2, 2, 1, 1);
-    layout->addWidget(pauseButton, 3, 2, 1, 1);
-    layout->addWidget(createLabel(tr("排行")), 4, 2, 1, 1);
-    layout->addWidget(tableWidget, 5, 2, 4, 1);
+    layout->addWidget(createLabel(tr("已移除的行数")), 0, 3, 1, 1);
+    layout->addWidget(linesLcd, 1, 3, 1, 1);
+    layout->addWidget(quitButton, 2, 3, 1, 1);
+    layout->addWidget(pauseButton, 3, 3, 1, 1);
+    layout->addWidget(createLabel(tr("排行")), 4, 3, 1, 2);
+    layout->addWidget(tableWidget, 5, 3, 4, 2);
     layout->setMenuBar(menuBar);
     setLayout(layout);
 

@@ -1,9 +1,9 @@
 {
     "users": [
         {
-            "level": 9,
+            "level": 1,
             "password": "123",
-            "score": 10531,
+            "score": 0,
             "signUpTime": "周三 9月 20 16:22:40 2017",
             "username": "123"
         },
