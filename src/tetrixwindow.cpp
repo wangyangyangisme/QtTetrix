@@ -15,7 +15,7 @@
 #include <QtWidgets/QTableWidget>
 #include <QtCore/QCoreApplication>
 
-TetrixWindow::TetrixWindow() {
+TetrixWindow::TetrixWindow() : QWidget() {
     board = new TetrixBoard(this);
     userManager = new UserManager(this);
     userDialog = new UserDialog(this);
@@ -34,10 +34,12 @@ TetrixWindow::TetrixWindow() {
 
     startButton = new QPushButton(tr("开始"), this);
     startButton->setFocusPolicy(Qt::NoFocus);
+    startButton->setDisabled(true);
     quitButton = new QPushButton(tr("退出"), this);
     quitButton->setFocusPolicy(Qt::NoFocus);
     pauseButton = new QPushButton(tr("暂停"), this);
     pauseButton->setFocusPolicy(Qt::NoFocus);
+    pauseButton->setDisabled(true);
     goOnButton = new QPushButton(tr("继续"), this);
     goOnButton->setFocusPolicy(Qt::NoFocus);
     goOnButton->setDisabled(true);
@@ -54,6 +56,7 @@ TetrixWindow::TetrixWindow() {
     tableWidget->setHorizontalHeaderLabels(headers);
     tableWidget->setColumnCount(2);
     tableWidget->setRowCount(4);
+    tableWidget->setFixedSize(width() / 4, height() / 2);
 
     connect(startButton, SIGNAL(clicked()), board, SLOT(start()));
     connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
@@ -70,9 +73,10 @@ TetrixWindow::TetrixWindow() {
     connect(signUpAction, &QAction::triggered, userDialog, &UserDialog::signUp);
     connect(userDialog, &UserDialog::sendSignInInfo, userManager, &UserManager::auth);
     connect(userDialog, &UserDialog::sendSignUpInfo, userManager, &UserManager::newUser);
+    connect(userManager, &UserManager::logInSuccess, startButton, &QPushButton::setDisabled);
+    connect(userManager, &UserManager::logInSuccess, pauseButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::logInSuccess, goOnButton, &QPushButton::setDisabled);
     connect(userManager, &UserManager::rankListAddUser, tableWidget, &QTableWidget::setItem);
-    // TODO: connect(this, &TetrixWindow::show, userDialog, &UserDialog::signIn);
 
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(createLabel(tr("下一块")), 0, 0);

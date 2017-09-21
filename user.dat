@@ -20,6 +20,13 @@
             "score": 0,
             "signUpTime": "周四 9月 21 00:42:35 2017",
             "username": "12345"
+        },
+        {
+            "level": 0,
+            "password": "mht",
+            "score": 0,
+            "signUpTime": "周四 9月 21 00:50:28 2017",
+            "username": "mht"
         }
     ]
 }
