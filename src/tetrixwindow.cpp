@@ -54,9 +54,9 @@ TetrixWindow::TetrixWindow() : QWidget() {
     QStringList headers;
     headers << "用户名" << "分数";
     tableWidget->setHorizontalHeaderLabels(headers);
-    tableWidget->setColumnCount(2);
-    tableWidget->setRowCount(4);
-    tableWidget->setFixedSize(width() / 4, height() / 2);
+    //tableWidget->setColumnCount(2);
+    //tableWidget->setRowCount(4);
+    tableWidget->setFixedSize(width() / 3, height() / 2.2);
 
     connect(startButton, SIGNAL(clicked()), board, SLOT(start()));
     connect(quitButton, SIGNAL(clicked()), qApp, SLOT(quit()));
@@ -79,21 +79,23 @@ TetrixWindow::TetrixWindow() : QWidget() {
     connect(userManager, &UserManager::rankListAddUser, tableWidget, &QTableWidget::setItem);
 
     QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(createLabel(tr("下一块")), 0, 0);
-    layout->addWidget(nextPieceLabel, 1, 0);
-    layout->addWidget(createLabel(tr("等级")), 2, 0);
-    layout->addWidget(levelLcd, 3, 0);
-    layout->addWidget(startButton, 4, 0);
-    layout->addWidget(goOnButton, 5, 0);
-    layout->addWidget(board, 0, 1, 6, 1);
-    layout->addWidget(createLabel(tr("分数")), 0, 2);
-    layout->addWidget(scoreLcd, 1, 2);
-    layout->addWidget(createLabel(tr("已移除的行数")), 2, 2);
-    layout->addWidget(linesLcd, 3, 2);
-    layout->addWidget(quitButton, 4, 2);
-    layout->addWidget(pauseButton, 5, 2);
-    layout->addWidget(createLabel(tr("排行")), 0, 3);
-    layout->addWidget(tableWidget, 1, 3);
+    layout->addWidget(createLabel(tr("下一块")), 0, 0, 1, 1);
+    layout->addWidget(nextPieceLabel, 1, 0, 2, 1);
+    layout->addWidget(createLabel(tr("等级")), 3, 0, 1, 1);
+    layout->addWidget(levelLcd, 4, 0, 1, 1);
+    layout->addWidget(createLabel(tr("分数")), 5, 0, 1, 1);
+    layout->addWidget(scoreLcd, 6, 0, 1, 1);
+    layout->addWidget(startButton, 7, 0, 1, 1);
+    layout->addWidget(goOnButton, 8, 0, 1, 1);
+
+    layout->addWidget(board, 0, 1, 9, 1);
+
+    layout->addWidget(createLabel(tr("已移除的行数")), 0, 2, 1, 1);
+    layout->addWidget(linesLcd, 1, 2, 1, 1);
+    layout->addWidget(quitButton, 2, 2, 1, 1);
+    layout->addWidget(pauseButton, 3, 2, 1, 1);
+    layout->addWidget(createLabel(tr("排行")), 4, 2, 1, 1);
+    layout->addWidget(tableWidget, 5, 2, 4, 1);
     layout->setMenuBar(menuBar);
     setLayout(layout);
 
