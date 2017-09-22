@@ -7,6 +7,7 @@
 #include "usermanager.h"
 #include "userdialog.h"
 
+#include <QtCore/QDebug>
 #include <QtWidgets/QLCDNumber>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
@@ -17,26 +18,18 @@
 #include <QtMultimedia/QMediaPlaylist>
 #include <QtCore/QCoreApplication>
 
-TetrixWindow::TetrixWindow() : QWidget() {
-    QPalette *palette = new QPalette;
+TetrixWindow::TetrixWindow() {
+    auto *palette = new QPalette;
     palette->setBrush(QPalette::Background,
                       QBrush(QPixmap(":/images/background/1").scaled(size(), Qt::IgnoreAspectRatio,
                                                                      Qt::SmoothTransformation)));
     setAutoFillBackground(true);
     setPalette(*palette);
 
-    QMediaPlayer *mediaPlayer = new QMediaPlayer(this);
-    QMediaPlaylist *playList = new QMediaPlaylist;
-    playList->addMedia(QUrl("qrc:/musics/background/1"));
-    playList->addMedia(QUrl("qrc:/musics/background/2"));
-    playList->addMedia(QUrl("qrc:/musics/background/3"));
-    playList->addMedia(QUrl("qrc:/musics/background/4"));
-    playList->addMedia(QUrl("qrc:/musics/background/5"));
-    playList->addMedia(QUrl("qrc:/musics/background/6"));
-    playList->addMedia(QUrl("qrc:/musics/background/7"));
-    playList->addMedia(QUrl("qrc:/musics/background/8"));
-    playList->addMedia(QUrl("qrc:/musics/background/9"));
-    playList->addMedia(QUrl("qrc:/musics/background/10"));
+    auto *mediaPlayer = new QMediaPlayer(this);
+    auto *playList = new QMediaPlaylist;
+    for (int i = 1; i < 11; i++)
+        playList->addMedia(QUrl(tr("qrc:/musics/background/%1").arg(i)));
     playList->setPlaybackMode(QMediaPlaylist::Loop);
     mediaPlayer->setPlaylist(playList);
     mediaPlayer->setVolume(50);
@@ -79,6 +72,7 @@ TetrixWindow::TetrixWindow() : QWidget() {
     QStringList headers;
     headers << tr("用户名") << tr("分数");
     tableWidget->setHorizontalHeaderLabels(headers);
+    tableWidget->setFixedWidth(static_cast<int>(width() / 2.5));
 
     connect(startButton, &QPushButton::clicked, board, &TetrixBoard::start);
     connect(goOnButton, &QPushButton::clicked, board, &TetrixBoard::goOn);
@@ -91,12 +85,12 @@ TetrixWindow::TetrixWindow() : QWidget() {
 
     connect(board, &TetrixBoard::scoreChanged, [this](int displayNum) { scoreLcd->display(displayNum); });
     connect(board, &TetrixBoard::scoreChanged, userManager, &UserManager::setCurrentScore);
+    connect(board, &TetrixBoard::scoreChanged, userManager, &UserManager::setMaxScore);
     connect(board, &TetrixBoard::scoreChanged, userManager, &UserManager::handleRankTable);
     connect(board, &TetrixBoard::levelChanged, [this](int displayNum) { levelLcd->display(displayNum); });
     connect(board, &TetrixBoard::levelChanged, userManager, &UserManager::setCurrentLevel);
     connect(board, &TetrixBoard::levelChanged, playList, &QMediaPlaylist::next);
     connect(board, &TetrixBoard::linesRemovedChanged, [this](int displayNum) { linesLcd->display(displayNum); });
-
     connect(board, &TetrixBoard::levelChanged, [this, palette](int level) {
         palette->setBrush(QPalette::Background,
                           QBrush(QPixmap(tr(":/images/background/%1").arg(level)).scaled(size(), Qt::IgnoreAspectRatio,
@@ -116,7 +110,7 @@ TetrixWindow::TetrixWindow() : QWidget() {
     connect(userDialog, &UserDialog::sendSignInInfo, userManager, &UserManager::auth);
     connect(userDialog, &UserDialog::sendSignUpInfo, userManager, &UserManager::newUser);
 
-    QGridLayout *layout = new QGridLayout(this);
+    auto layout = new QGridLayout(this);
     layout->addWidget(createLabel(tr("下一块")), 0, 0, 1, 1);
     layout->addWidget(nextPieceLabel, 1, 0, 2, 1);
     layout->addWidget(createLabel(tr("等级")), 3, 0, 1, 1);
@@ -132,8 +126,8 @@ TetrixWindow::TetrixWindow() : QWidget() {
     layout->addWidget(linesLcd, 1, 3, 1, 1);
     layout->addWidget(quitButton, 2, 3, 1, 1);
     layout->addWidget(pauseButton, 3, 3, 1, 1);
-    layout->addWidget(createLabel(tr("排行")), 4, 3, 1, 2);
-    layout->addWidget(tableWidget, 5, 3, 4, 2);
+    layout->addWidget(createLabel(tr("排行")), 4, 3, 1, 1);
+    layout->addWidget(tableWidget, 5, 3, 4, 1);
     layout->setMenuBar(menuBar);
     setLayout(layout);
 
@@ -142,7 +136,7 @@ TetrixWindow::TetrixWindow() : QWidget() {
 }
 
 QLabel *TetrixWindow::createLabel(const QString &text) {
-    QLabel *lbl = new QLabel(text);
+    auto *lbl = new QLabel(text);
     lbl->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     return lbl;
 }

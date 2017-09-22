@@ -63,8 +63,8 @@ TetrixPiece TetrixPiece::rotatedLeft() const {
     TetrixPiece result;
     result.pieceShape = pieceShape;
     for (int i = 0; i < 4; ++i) {
-        result.setX(i, y(i));
-        result.setY(i, -x(i));
+        result.setX(i, getY(i));
+        result.setY(i, -getX(i));
     }
     return result;
 }
@@ -76,8 +76,8 @@ TetrixPiece TetrixPiece::rotatedRight() const {
     TetrixPiece result;
     result.pieceShape = pieceShape;
     for (int i = 0; i < 4; ++i) {
-        result.setX(i, -y(i));
-        result.setY(i, x(i));
+        result.setX(i, -getY(i));
+        result.setY(i, getX(i));
     }
     return result;
 }

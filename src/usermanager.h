@@ -28,6 +28,8 @@ public:
 
     void setCurrentLevel(int currentLevel);
 
+    void setMaxScore(int currentScore);
+
     void showLogInSuccess(const QString &text);
 
     void handleRankTable(int);

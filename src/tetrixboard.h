@@ -21,13 +21,13 @@ public:
 
     void setNextPieceLabel(QLabel *label);
 
-    QSize sizeHint() const override;
-
-    QSize minimumSizeHint() const override;
-
     void setScore(int score);
 
     void setLevel(int level);
+
+    QSize sizeHint() const override;
+
+    QSize minimumSizeHint() const override;
 
 public slots:
 

@@ -5,19 +5,32 @@
 #include "userdialog.h"
 
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFormLayout>
 
 UserDialog::UserDialog(QWidget *parent) : QDialog(parent) {
+    QPalette *palette = new QPalette;
+    palette->setBrush(QPalette::Background,
+                      QBrush(QPixmap(":/images/background/1").scaled(size(), Qt::IgnoreAspectRatio,
+                                                                     Qt::SmoothTransformation)));
+    setAutoFillBackground(true);
+    setPalette(*palette);
+
     usernameLineEdit = new QLineEdit(tr("请输入用户名"), this);
     passwordLineEdit = new QLineEdit(tr("请输入密码"), this);
-    passwordLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+    usernameLineEdit->setMaxLength(20);
+    passwordLineEdit->setMaxLength(20);
+    passwordLineEdit->setEchoMode(QLineEdit::Password);
     pushButton = new QPushButton(this);
 
     QFormLayout *layout = new QFormLayout(this);
+    layout->addRow(new QLabel(tr("")));
     layout->addRow(tr("账号"), usernameLineEdit);
+    layout->addRow(new QLabel(tr("")));
     layout->addRow(tr("密码"), passwordLineEdit);
+    layout->addRow(new QLabel(tr("")));
     layout->addRow(pushButton);
     setLayout(layout);
 

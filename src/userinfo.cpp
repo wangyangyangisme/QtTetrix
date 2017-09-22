@@ -23,6 +23,15 @@ void UserInfo::setScore(int score) {
     UserInfo::score = score;
 }
 
+int UserInfo::getMaxScore() const {
+    return maxScore;
+}
+
+void UserInfo::setMaxScore(int maxScore) {
+    if (UserInfo::maxScore < maxScore)
+        UserInfo::maxScore = maxScore;
+}
+
 const QString &UserInfo::getUsername() const {
     return username;
 }
@@ -33,7 +42,7 @@ const QString &UserInfo::getPassword() const {
 
 UserInfo::UserInfo(const QString &signUpTime, const QString &username, const QString &password, int level,
                    int score) : username(username), password(password),
-                                level(level), score(score) {}
+                                level(level), score(score), maxScore(0) {}
 
 const QJsonObject &UserInfo::toQJsonObject() const {
     QJsonObject *result = new QJsonObject;
@@ -41,6 +50,7 @@ const QJsonObject &UserInfo::toQJsonObject() const {
     (*result)["password"] = password;
     (*result)["level"] = level;
     (*result)["score"] = score;
+    (*result)["maxScore"] = maxScore;
     QJsonArray signInArray, signOutArray;
     for (const QString &singleSignInTime : signInTimes)
         signInArray.append(QJsonValue(singleSignInTime));
@@ -60,10 +70,11 @@ UserInfo::UserInfo(const QJsonObject &userObject) {
     password = userObject["password"].toString();
     level = userObject["level"].toInt();
     score = userObject["score"].toInt();
+    maxScore = userObject["maxScore"].toInt();
 }
 
 bool UserInfo::operator<(const UserInfo &rhs) const {
-    return score >= rhs.score;
+    return maxScore >= rhs.maxScore;
 }
 
 UserInfo::UserInfo() = default;

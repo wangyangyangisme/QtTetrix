@@ -13,7 +13,7 @@ class QJsonObject;
 class UserInfo {
 private:
     QString username, password;
-    int level, score;
+    int level, score, maxScore;
 
 public:
     UserInfo();
@@ -33,6 +33,10 @@ public:
     int getScore() const;
 
     void setScore(int score);
+
+    int getMaxScore() const;
+
+    void setMaxScore(int maxScore);
 
     const QJsonObject &toQJsonObject() const;
 

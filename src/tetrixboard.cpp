@@ -7,6 +7,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QKeyEvent>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
 
 TetrixBoard::TetrixBoard(QWidget *parent) : QFrame(parent) {
     setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -79,8 +80,8 @@ void TetrixBoard::paintEvent(QPaintEvent *event) {
 
     if (curPiece.shape() != NoShape)
         for (int i = 0; i < 4; ++i) {
-            int x = curX + curPiece.x(i);
-            int y = curY - curPiece.y(i);
+            int x = curX + curPiece.getX(i);
+            int y = curY - curPiece.getY(i);
             drawSquare(painter, rect.left() + x * squareWidth(), boardTop + (BoardHeight - y - 1) * squareHeight(),
                        curPiece.shape());
         }
@@ -129,8 +130,8 @@ void TetrixBoard::timerEvent(QTimerEvent *event) {
 }
 
 void TetrixBoard::clearBoard() {
-    for (int i = 0; i < BoardHeight * BoardWidth; ++i)
-        board[i] = NoShape;
+    for (auto &i : board)
+        i = NoShape;
 }
 
 void TetrixBoard::dropDown() {
@@ -151,7 +152,7 @@ void TetrixBoard::oneLineDown() {
 
 void TetrixBoard::pieceDropped(int dropHeight) {
     for (int i = 0; i < 4; ++i) {
-        int x = curX + curPiece.x(i), y = curY - curPiece.y(i);
+        int x = curX + curPiece.getX(i), y = curY - curPiece.getY(i);
         shapeAt(x, y) = curPiece.shape();
     }
 
@@ -162,7 +163,7 @@ void TetrixBoard::pieceDropped(int dropHeight) {
         emit levelChanged(level);
     }
 
-    score += dropHeight + 7;
+    score += dropHeight * level + 7;
     emit scoreChanged(score);
     removeFullLines();
 
@@ -190,12 +191,11 @@ void TetrixBoard::removeFullLines() {
             for (int j = 0; j < BoardWidth; ++j)
                 shapeAt(j, BoardHeight - 1) = NoShape;
         }
-
     }
 
     if (numFullLines > 0) {
         numLinesRemoved += numFullLines;
-        score += 10 * numFullLines;
+        score += 10 * numFullLines * level;
         emit linesRemovedChanged(numLinesRemoved);
         emit scoreChanged(score);
 
@@ -217,6 +217,9 @@ void TetrixBoard::newPiece() {
         curPiece.setShape(NoShape);
         timer.stop();
         isStarted = false;
+        QMessageBox::information(this, tr("失败"), tr("游戏结束！您的分数是%1，您的等级是%2。").arg(score).arg(level));
+        emit scoreChanged(score = 0);
+        emit levelChanged(level = 1);
     }
 }
 
@@ -231,7 +234,7 @@ void TetrixBoard::showNextPiece() {
     painter.fillRect(pixmap.rect(), nextPieceLabel->palette().background());
 
     for (int i = 0; i < 4; ++i) {
-        int x = nextPiece.x(i) - nextPiece.minX(), y = nextPiece.y(i) - nextPiece.minY();
+        int x = nextPiece.getX(i) - nextPiece.minX(), y = nextPiece.getY(i) - nextPiece.minY();
         drawSquare(painter, x * squareWidth(), y * squareHeight(), nextPiece.shape());
     }
     nextPieceLabel->setPixmap(pixmap);
@@ -239,7 +242,7 @@ void TetrixBoard::showNextPiece() {
 
 bool TetrixBoard::tryMove(const TetrixPiece &newPiece, int newX, int newY) {
     for (int i = 0; i < 4; ++i) {
-        int x = newX + newPiece.x(i), y = newY - newPiece.y(i);
+        int x = newX + newPiece.getX(i), y = newY - newPiece.getY(i);
         if (x < 0 || x >= BoardWidth || y < 0 || y >= BoardHeight)
             return false;
         if (shapeAt(x, y) != NoShape)

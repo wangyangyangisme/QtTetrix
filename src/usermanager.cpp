@@ -56,7 +56,8 @@ UserManager::~UserManager() {
     userFile.open(QIODevice::WriteOnly);
     QJsonObject saveDoc;
     QJsonArray userArray;
-    currentUser->signOutTimes.push_back(QDateTime::currentDateTime().toString());
+    if (currentUser != nullptr)
+        currentUser->signOutTimes.push_back(QDateTime::currentDateTime().toString());
     for (UserInfo &user : userVector)
         userArray.append(user.toQJsonObject());
     saveDoc["users"] = userArray;
@@ -66,6 +67,10 @@ UserManager::~UserManager() {
 
 void UserManager::setCurrentScore(int currentScore) {
     currentUser->setScore(currentScore);
+}
+
+void UserManager::setMaxScore(int currentScore) {
+    currentUser->setMaxScore(currentScore);
 }
 
 void UserManager::setCurrentLevel(int currentLevel) {
@@ -83,6 +88,6 @@ void UserManager::handleRankTable(int score) {
     std::sort(rankList.begin(), rankList.end());
     for (int i = 0; i < rankList.size(); i++) {
         emit rankListAddUser(i, 0, new QTableWidgetItem(rankList[i].getUsername()));
-        emit rankListAddUser(i, 1, new QTableWidgetItem(tr("%1").arg(rankList[i].getScore())));
+        emit rankListAddUser(i, 1, new QTableWidgetItem(tr("%1").arg(rankList[i].getMaxScore())));
     }
 }

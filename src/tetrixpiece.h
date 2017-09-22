@@ -19,9 +19,9 @@ public:
 
     TetrixShape shape() const { return pieceShape; }
 
-    int x(int index) const { return coords[index][0]; }
+    int getX(int index) const { return coords[index][0]; }
 
-    int y(int index) const { return coords[index][1]; }
+    int getY(int index) const { return coords[index][1]; }
 
     int minX() const;
 
